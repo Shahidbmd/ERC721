@@ -13,7 +13,7 @@ contract NFTMarketplace is ERC721Holder {
     }
 
     //Events
-    event NFTsStatus (uint indexed _orderId,uint indexed _NFTId, IERC721 indexed  _nftAddress,uint _NFTprice, uint _paymentId, address _owner, OrderStatus _orderStatus);
+    event NFTsStatus (uint indexed _orderId, uint indexed _NFTId, IERC721 indexed _nftAddress, uint _paymentId, address _owner);
     event pamentMethods (uint indexed _paymentId, IERC20 indexed _paymentTokens);  
 
     //Order Enum
@@ -51,7 +51,7 @@ contract NFTMarketplace is ERC721Holder {
     }
 
     //list ERC721 NFTs
-    function listForSale(uint _NFTId, uint _nftPrice , uint _paymentId,IERC721 _nftAddress) external {
+    function listForSale(uint _NFTId, uint _nftPrice , uint _paymentId, IERC721 _nftAddress) external {
         isValidValue(_NFTId);
         isValidPrice(_nftPrice);
         isValidPaymentId(_paymentId);
@@ -59,7 +59,7 @@ contract NFTMarketplace is ERC721Holder {
         transferNFT(_nftAddress,msg.sender,address(this),_NFTId);
         NFT_Status[orderId] = OrderStatus.Open;
         setNFTsData[orderId] = nftsData(_NFTId,_nftPrice,_paymentId,_nftAddress,msg.sender);
-        emit NFTsStatus(orderId,_NFTId,_nftAddress,_nftPrice, _paymentId,msg.sender,NFT_Status[orderId]);
+        emit NFTsStatus(orderId, _NFTId, _nftAddress, _paymentId, msg.sender);
         orderId++;
     }
      
@@ -71,7 +71,7 @@ contract NFTMarketplace is ERC721Holder {
         NFT_Status[_orderId] = OrderStatus.Cancelled;
         transferNFT(NFTData.nftAddress,address(this),msg.sender,NFTData.NFTId);
         delete setNFTsData[_orderId];
-        emit NFTsStatus(_orderId,NFTData.NFTId,NFTData.nftAddress,NFTData.NFTprice, NFTData.paymentId,NFTData.owner,NFT_Status[_orderId]);
+        emit NFTsStatus(_orderId, NFTData.NFTId, NFTData.nftAddress, NFTData.paymentId,NFTData.owner);
     }
     
     //Buy Listed Nfts
@@ -86,7 +86,7 @@ contract NFTMarketplace is ERC721Holder {
         transferNFT(NFTData.nftAddress,address(this), msg.sender,NFTData.NFTId);
         NFT_Status[_orderId] = OrderStatus.Filled;
         delete setNFTsData[_orderId];
-        emit NFTsStatus(_orderId,NFTData.NFTId,NFTData.nftAddress, NFTData.NFTprice, NFTData.paymentId,msg.sender,NFT_Status[_orderId]);
+        emit NFTsStatus(_orderId, NFTData.NFTId, NFTData.nftAddress, NFTData.paymentId,msg.sender);
     }
     
     //get NFT details from OrdereId
