@@ -30,12 +30,16 @@ contract NonFungibleToken is ERC721,Ownable {
 
     constructor() ERC721("Non Fungible Token", "NFT") {}
 
-    string baseUri = "bmd.com/";
+    string private baseUri = "bmd.com/";
 
      function _baseURI() internal view  override returns (string memory) {
         return baseUri;
     }
-    
+
+    function setBaseURI(string memory _baseUri) external onlyOwner{
+        baseUri = _baseUri;
+    }
+
     //mint NFTs for public
     function publicMint(address to) external payable {
         currentTokenId.increment();
